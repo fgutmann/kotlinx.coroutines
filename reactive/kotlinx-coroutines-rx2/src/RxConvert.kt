@@ -5,8 +5,12 @@
 package kotlinx.coroutines.rx2
 
 import io.reactivex.*
+import io.reactivex.functions.Function
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.reactive.flow.*
+import org.reactivestreams.*
 import kotlin.coroutines.*
 
 /**
@@ -75,4 +79,16 @@ public fun <T : Any> Deferred<T>.asSingle(context: CoroutineContext): Single<T> 
 public fun <T : Any> ReceiveChannel<T>.asObservable(context: CoroutineContext): Observable<T> = GlobalScope.rxObservable(context) {
     for (t in this@asObservable)
         send(t)
+}
+
+@JvmName("from")
+public fun <T: Any> Flow<T>.asObservable() : Observable<T> = TODO()
+
+@JvmName("from")
+public fun <T: Any> Flow<T>.asFlowable(): Flowable<T> = FlowAsFlowable(asPublisher())
+
+private class FlowAsFlowable<T: Any>(private val publisher: Publisher<T>) : Flowable<T>() {
+    override fun subscribeActual(s: Subscriber<in T>?) {
+        publisher.subscribe(s)
+    }
 }

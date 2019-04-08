@@ -19,9 +19,9 @@ import java.util.concurrent.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ForkJoinPool.commonPool
 
-class IterableFlowTckTest : PublisherVerification<Long>(TestEnvironment()) {
+open class IterableFlowTckTest : PublisherVerification<Long>(TestEnvironment()) {
 
-    private fun generate(num: Long): Array<Long> {
+    protected fun generate(num: Long): Array<Long> {
         return Array(if (num >= Integer.MAX_VALUE) 1000000 else num.toInt()) { it.toLong() }
     }
 
